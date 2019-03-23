@@ -1,0 +1,6 @@
+ethNodeAddr: ""
+keyServiceAddr: ""
+protocolContractAddr: ""
+tokenContractAddr: ""
+fromBlock: 0
+ipfsNodeAddr: ""
