@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gin-gonic/gin"
 	"github.com/scryinfo/iscap_demo/src/sdk"
 	"github.com/scryinfo/iscap_demo/src/sdk/core/chainoperations"
 	"github.com/scryinfo/iscap_demo/src/sdk/core/ethereum/events"
@@ -84,7 +85,17 @@ func init()  {
 	fromBlock = viper.GetInt("fromBlock")
 	ipfsNodeAddr = viper.GetString("ipfsNodeAddr")
 }
+
 func main() {
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	r.Run() // listen and serve on 0.0.0.0:8080
+	
 	wd, _ := os.Getwd()
 	err := sdk.Init(ethNodeAddr, keyServiceAddr, protocolContractAddr, tokenContractAddr, fromBlock, ipfsNodeAddr, wd+"/testconsole.log", "scryapp1")
 	if err != nil {
