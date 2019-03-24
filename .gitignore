@@ -6,3 +6,5 @@ kyc\.iml
 testconsole\.log
 
 conf\.yaml
+
+tmp/runner-build
