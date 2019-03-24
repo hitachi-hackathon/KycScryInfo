@@ -31,6 +31,8 @@ var (
 	appIndex                                       = 0
 	appTitle                                       = "scryapp"
 	buyer                   *scryclient.ScryClient = nil
+	isVerfity = 0
+	uploadBody UploadBody
 )
 
 var (
@@ -108,7 +110,6 @@ func initScry() {
 	buyer.SubscribeEvent("TransactionClose", onClose)
 	// 发送数据
 	fmt.Println("Start testing tx without verification...")
-
 }
 
 func init() {
@@ -125,7 +126,7 @@ func init() {
 	protocolContractAddr = viper.GetString("protocolContractAddr")
 	tokenContractAddr = viper.GetString("tokenContractAddr")
 	ipfsNodeAddr = viper.GetString("ipfsNodeAddr")
-	//initScry()
+	initScry()
 }
 
 type UploadBody struct {
@@ -149,6 +150,13 @@ func main() {
 	r.GET("/institute", func(c *gin.Context) {
 		address := c.Query("address")
 		log.Println(address)
+		if isVerfity == 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"user":   "0x2008cc463061d385d87a294b2f3edce229f74b58",
+				"status": "pending",
+			})
+			return
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"user":   "0x2008cc463061d385d87a294b2f3edce229f74b58",
 			"status": "pass",
@@ -159,8 +167,8 @@ func main() {
 	{
 		// upload
 		user.POST("/upload", func(context *gin.Context) {
-			var uploadBody UploadBody
-			err := context.BindJSON(&uploadBody)
+			var a UploadBody
+			err := context.BindJSON(&a)
 			if err != nil {
 				context.JSON(http.StatusBadRequest, gin.H{
 					"err_code": 0001,
@@ -168,8 +176,14 @@ func main() {
 				})
 				return
 			}
-			//SellerPublishData()
+			SellerPublishData()
 			// upload user information
+			isVerfity = 0
+			uploadBody.Gender = a.Gender
+			uploadBody.Address = a.Address
+			uploadBody.Age = a.Age
+			uploadBody.Country = a.Country
+			uploadBody.ResidencyAddress = a.ResidencyAddress
 			context.JSON(http.StatusOK, gin.H{
 				"status": true,
 			})
@@ -200,12 +214,12 @@ func main() {
 			authorityAddress := c.Query("address")
 			log.Println(authorityAddress)
 			c.JSON(http.StatusOK, gin.H{
-				"address":           "useraddress",
-				"name":              "name",
-				"gender":            "male",
-				"country":           "china",
-				"age":               18,
-				"residency_address": "china",
+				"address":           "",
+				"name":              uploadBody.Name,
+				"gender":            uploadBody.Gender,
+				"country":           uploadBody.Country,
+				"age":               uploadBody.Age,
+				"residency_address": uploadBody.ResidencyAddress,
 			})
 		})
 		authority.POST("/certify", func(c *gin.Context) {
@@ -241,6 +255,7 @@ func main() {
 				})
 				return
 			}
+			isVerfity = 1
 			c.JSON(http.StatusOK, gin.H{
 				"status": true,
 			})

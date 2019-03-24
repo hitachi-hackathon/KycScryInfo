@@ -3,7 +3,7 @@ import { Container,Row,Col} from 'react-bootstrap'
 import axios from "axios"
 
 const instance = axios.create({
-  baseURL: 'http://192.168.43.5:8081',
+  baseURL: 'http://172.16.0.38:8081',
   crossDomain: true
 });
 
@@ -108,7 +108,7 @@ class Certify extends Component{
                                   <td>{this.state.residency_address}</td>
                                   <td>{this.state.user_address}</td>
                                   <td>
-                                    {this.state.name?<button type="submit" class="btn btn-primary"
+                                    {this.state.address? <button type="submit" class="btn btn-primary"
                                         onClick={this.submit.bind(this)}
                                     >Grant Certificate</button>
                                     :<div></div>
