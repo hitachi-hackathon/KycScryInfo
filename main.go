@@ -12,6 +12,7 @@ import (
 	"github.com/scryinfo/iscap_demo/src/sdk/util/accounts"
 	"github.com/spf13/viper"
 	"math/big"
+	"net/http"
 	"os"
 	"time"
 )
@@ -35,7 +36,6 @@ var (
 	keyServiceAddr       = ""
 	protocolContractAddr = ""
 	tokenContractAddr    = ""
-	fromBlock            = 0
 	ipfsNodeAddr         = ""
 )
 
@@ -66,11 +66,12 @@ func GetTokenByClient(client *scryclient.ScryClient) *big.Int {
 	return token
 }
 
+// Printf the eth and Token
 func PrintfEthAndTokenByClient(client *scryclient.ScryClient) {
 	fmt.Println(fmt.Sprintf("account %s has eth %d , token %d ", client.Account.Address, GetEthByClient(client), GetTokenByClient(client)))
 }
 
-func init()  {
+func init() {
 	viper.SetConfigName("conf")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -82,12 +83,38 @@ func init()  {
 	keyServiceAddr = viper.GetString("keyServiceAddr")
 	protocolContractAddr = viper.GetString("protocolContractAddr")
 	tokenContractAddr = viper.GetString("tokenContractAddr")
-	fromBlock = viper.GetInt("fromBlock")
 	ipfsNodeAddr = viper.GetString("ipfsNodeAddr")
+}
+
+type UploadBody struct {
+	Address          string `json:"address"`           // user address
+	Name             string `json:"name"`              // user email
+	Gender           string `json:"gender"`            // user gender
+	Country          string `json:"country"`           // user country
+	Age              string `json:"age"`               // user age
+	ResidencyAddress string `json:"residency_address"` // user residency address
 }
 
 func main() {
 	r := gin.Default()
+	// upload
+	r.POST("/upload", func(context *gin.Context) {
+		var uploadBody UploadBody
+		err := context.BindJSON(&uploadBody)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{
+				"err_code": 0001,
+				"message":  err,
+			})
+			return
+		}
+		// upload user information
+		context.JSON(http.StatusOK, gin.H{
+			"message": "ok",
+		})
+		return
+	})
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -95,9 +122,8 @@ func main() {
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
-	
 	wd, _ := os.Getwd()
-	err := sdk.Init(ethNodeAddr, keyServiceAddr, protocolContractAddr, tokenContractAddr, fromBlock, ipfsNodeAddr, wd+"/testconsole.log", "scryapp1")
+	err := sdk.Init(ethNodeAddr, keyServiceAddr, protocolContractAddr, tokenContractAddr, 0, ipfsNodeAddr, wd+"/testconsole.log", "scryapp1")
 	if err != nil {
 		fmt.Println("sdk init err!", err)
 	}
@@ -105,7 +131,7 @@ func main() {
 	seller = scryclient.NewScryClient("0x2008cc463061d385d87a294b2f3edce229f74b58")
 	// 查询账户比特币和Token余额
 	PrintfEthAndTokenByClient(seller)
-	// 1.数据成功发布到IPFS和区块链上
+	// 1. 数据成功发布到IPFS和区块链上
 	seller.SubscribeEvent("DataPublish", onPublish)
 	// 6. 卖⽅上传待卖数据的metaDataId到区块链上，该ID使⽤买⽅公钥加密
 	// 8. 卖⽅收到购买数据的通知，⽣成使⽤买⽅公钥加密的meta data id，发给合约
