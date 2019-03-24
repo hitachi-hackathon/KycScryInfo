@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import { Container,Row,Col} from 'react-bootstrap';
 // components
+import Logo from "./pic/finger.png"
 import email from './pic/email.svg';
 import telegram from './pic/telegram.svg';
 
@@ -16,7 +17,7 @@ class Footer extends Component{
                             <Col></Col>
                             <Col xs={12} md={12} lg={9}>
                                 <Row>
-                                <Col md={3} sm={4} xs={12} ></Col>
+                                <Col md={3} sm={4} xs={12} ><p class="footer-title">FaceX</p></Col>
                                 <Col md={3} sm={3} xs={12} ></Col>
                                 <Col md={3} sm={3} xs={6} >
                                     <p class="footer-title">Solution</p>

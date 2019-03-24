@@ -35,6 +35,9 @@
     color: #f5f5f5;
 }
 
+#logo{
+    width:100px;
+}
 
 #footer ul{ 
     list-style-type: none; 

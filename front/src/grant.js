@@ -11,7 +11,7 @@ class Grant extends Component{
     constructor(props){
         super(props);
         this.state=({
-            state:"0",
+            status:"0",
             address:"User address",
             dexAddress:"institute address",
             bank:"ICBC Bank"
@@ -20,10 +20,10 @@ class Grant extends Component{
     }
 
     catchRes(res){
-        const msg = res.data;
+        // const msg = res.data;
         console.log(res);
         this.setState({
-            state:"1",
+            status:"1",
         });
     }
 
@@ -32,14 +32,15 @@ class Grant extends Component{
     }
 
     submit(){
-        instance.get('/user/grant',{
-            address:this.state.address,
-            institute_address:this.state.dexAddress,
-        }).then((res)=>{
-            this.catchRes(res);
-        }).catch((err)=>{
-            this.catchErr(err);
-        })
+        this.catchRes("fsdf");
+        // instance.get('/user/grant',{
+        //     address:this.state.address,
+        //     institute_address:this.state.dexAddress,
+        // }).then((res)=>{
+        //     this.catchRes(res);
+        // }).catch((err)=>{
+        //     this.catchErr(err);
+        // })
     }
 
     changeBank(e){
@@ -50,9 +51,9 @@ class Grant extends Component{
 
     render(){
         let content;
-        if(this.state.state === "0"){
+        if(this.state.status === "0"){
             content = (
-            <div class="row  align-items-center h-100">
+            <div class="row align-items-center h-100">
                 <div class="col ">
                     <h3 class="title2 text-center" >Grant Institute your KYC certificate</h3>
                     <form id="form">
