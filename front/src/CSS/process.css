@@ -1,0 +1,32 @@
+.title1{
+    padding-top: 50px;
+    color: #364f6b;
+}
+.title2{
+    color: #fc5185;
+    padding-bottom: 30px;
+}
+
+#form{
+    padding-bottom: 40px;
+}
+
+.fill { 
+/*    min-height: 100%;
+    height: 100%;*/
+    min-height: 100vh;
+}
+
+#status{
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+#spinner{
+    width: 3rem; 
+    height: 3rem;
+}
+
+#process{
+    padding-top: 50px;
+}

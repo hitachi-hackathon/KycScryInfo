@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/scryinfo/iscap_demo/src/sdk"
 	"github.com/scryinfo/iscap_demo/src/sdk/core/chainoperations"
@@ -143,6 +144,7 @@ type AuthorityCertify struct {
 
 func main() {
 	r := gin.Default()
+	r.Use(cors.Default())
 	// Institute
 	r.GET("/institute", func(c *gin.Context) {
 		address := c.Query("address")
@@ -153,7 +155,6 @@ func main() {
 		})
 		return
 	})
-
 	user := r.Group("/user")
 	{
 		// upload
@@ -195,7 +196,7 @@ func main() {
 	}
 	authority := r.Group("/authority")
 	{
-		authority.GET("users", func(c *gin.Context) {
+		authority.GET("/users", func(c *gin.Context) {
 			authorityAddress := c.Query("address")
 			log.Println(authorityAddress)
 			c.JSON(http.StatusOK, gin.H{
